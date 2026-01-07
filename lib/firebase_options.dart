@@ -31,7 +31,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -56,6 +56,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '951577124432',
     projectId: 'projectmad-6e072',
     storageBucket: 'projectmad-6e072.firebasestorage.app',
+    authDomain: 'projectmad-6e072.firebaseapp.com', // <--- added
+    measurementId: 'G-1V0T3G8H1S', // optional, but recommended
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -65,6 +67,7 @@ class DefaultFirebaseOptions {
     projectId: 'projectmad-6e072',
     storageBucket: 'projectmad-6e072.firebasestorage.app',
     iosBundleId: 'com.example.projectmad',
+    authDomain: 'projectmad-6e072.firebaseapp.com',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -74,6 +77,7 @@ class DefaultFirebaseOptions {
     projectId: 'projectmad-6e072',
     storageBucket: 'projectmad-6e072.firebasestorage.app',
     iosBundleId: 'com.example.projectmad',
+    authDomain: 'projectmad-6e072.firebaseapp.com',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

@@ -19,18 +19,20 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        // Updated to Java 17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        // Updated to JVM target 17
+        jvmTarget = "17"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false       // Disable code shrinking
-            isShrinkResources = false     // Disable resource shrinking
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -49,5 +51,5 @@ flutter {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
-    implementation("androidx.multidex:multidex:2.0.1") // For multiDex if needed by Firebase
+    implementation("androidx.multidex:multidex:2.0.1")
 }

@@ -26,7 +26,7 @@ class ProductScreen extends StatelessWidget {
               style: TextStyle(fontSize: 20, color: Colors.green),
             ),
             SizedBox(height: 16),
-            Text(product.description),
+
           ],
         ),
       ),

@@ -4,13 +4,10 @@ import 'package:projectmad/main.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
-    // 1. Remove 'const' from MyApp()
-    // Note: This test might still fail in the console because Firebase 
-    // requires a physical/emulator device, but it will stop the red error lines.
-    await tester.pumpWidget(MyApp());
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
 
-    // 2. We check for 'MSI Store' (the title in your HomeScreen) 
-    // instead of '0' because your app is no longer a counter app.
+    // Check that "MSI Store" is not currently on screen (example text from HomeScreen).
     expect(find.text('MSI Store'), findsNothing);
   });
 }
