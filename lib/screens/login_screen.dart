@@ -2,10 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
-import 'home_screen.dart';
+import '../main.dart'; // for adminEmail and UserMainNavScreen
 import 'register_screen.dart';
 import 'admin_product_screen.dart';
-import '../main.dart'; // for adminEmail
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -29,17 +28,22 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Email input
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: 'Email'),
             ),
             const SizedBox(height: 10),
+
+            // Password input
             TextField(
               controller: _passwordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Password'),
             ),
             const SizedBox(height: 20),
+
+            // Login button
             _loading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
@@ -54,17 +58,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 setState(() => _loading = false);
 
                 if (success) {
-                  // Check admin email
                   if (authProvider.user?.email == adminEmail) {
-                    Navigator.pushReplacement(
+                    // Admin screen (no navbar)
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => AdminProductScreen()),
+                        builder: (_) => AdminProductScreen(),
+                      ),
+                          (route) => false,
                     );
                   } else {
-                    Navigator.pushReplacement(
+                    // Normal user → show full navigation bar
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (_) => HomeScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const UserMainNavScreen(),
+                      ),
+                          (route) => false,
                     );
                   }
                 } else {
@@ -75,6 +85,10 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               child: const Text('Login'),
             ),
+
+            const SizedBox(height: 10),
+
+            // Register navigation
             TextButton(
               onPressed: () {
                 Navigator.push(

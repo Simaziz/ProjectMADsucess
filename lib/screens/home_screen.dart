@@ -1,14 +1,16 @@
+// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/product_provider.dart';
 import '../widgets/product_tile.dart';
 import '../models/product.dart';
+
 import 'cart_screen.dart';
 import 'wishlist_screen.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -16,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<void> _productsFuture;
-  int _selectedIndex = 0; // For bottom navbar
 
   @override
   void initState() {
@@ -25,49 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
         Provider.of<ProductProvider>(context, listen: false).fetchProducts();
   }
 
-  void _onNavBarTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final List<Product> products =
-        Provider.of<ProductProvider>(context).products;
+    final List<Product> products = Provider.of<ProductProvider>(context).products;
 
-    // Screens for bottom navbar
-    final List<Widget> screens = [
-      _buildShopScreen(products),
-      WishlistScreen(allProducts: products),
-      ProfileScreen(),
-    ];
-
-    return Scaffold(
-      body: screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onNavBarTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Shop',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Wishlist',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Shop screen with cart button only
-  Widget _buildShopScreen(List<Product> products) {
     return FutureBuilder(
       future: _productsFuture,
       builder: (ctx, snapshot) {
@@ -80,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Top row with "Shop" title and cart button only
+                  // Top row with title and cart button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -94,33 +56,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         icon: const Icon(Icons.shopping_cart),
                         onPressed: () {
+                          // Navigate to Cart screen from here
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => const CartScreen(),
-                            ),
+                            MaterialPageRoute(builder: (_) => const CartScreen()),
                           );
                         },
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
-                  // Product Grid
                   Expanded(
                     child: products.isEmpty
                         ? const Center(child: Text('No products available.'))
                         : GridView.builder(
                       padding: EdgeInsets.zero,
                       itemCount: products.length,
-                      gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.75,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
                       ),
-                      itemBuilder: (ctx, i) =>
-                          ProductTile(product: products[i]),
+                      itemBuilder: (ctx, i) => ProductTile(product: products[i]),
                     ),
                   ),
                 ],

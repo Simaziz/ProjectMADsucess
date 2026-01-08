@@ -1,24 +1,39 @@
 // lib/widgets/product_tile.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../models/product.dart';
 import '../providers/wishlist_provider.dart';
 import '../providers/cart_provider.dart';
+import '../screens/login_screen.dart';
 
 class ProductTile extends StatelessWidget {
   final Product product;
-  final bool readOnly; // <--- NEW: disable buttons when true
+  final bool readOnly; // Disable buttons if true
 
   const ProductTile({
     Key? key,
     required this.product,
-    this.readOnly = false, // default is false
+    this.readOnly = false,
   }) : super(key: key);
+
+  void _requireLogin(BuildContext context) {
+    // Show SnackBar and navigate to login
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please login to continue")),
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+    final user = FirebaseAuth.instance.currentUser;
 
     return Card(
       elevation: 3,
@@ -64,10 +79,21 @@ class ProductTile extends StatelessWidget {
                     color: Colors.red,
                   ),
                   onPressed: () {
-                    if (wishlistProvider.isInWishlist(product.id)) {
-                      wishlistProvider.removeFromWishlist(product.id);
+                    if (user == null) {
+                      _requireLogin(context);
                     } else {
-                      wishlistProvider.addToWishlist(product);
+                      if (wishlistProvider.isInWishlist(product.id)) {
+                        wishlistProvider.removeFromWishlist(product.id);
+                      } else {
+                        wishlistProvider.addToWishlist(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:
+                            Text('${product.name} added to wishlist'),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      }
                     }
                   },
                 ),
@@ -76,13 +102,17 @@ class ProductTile extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.shopping_cart, color: Colors.blue),
                   onPressed: () {
-                    cartProvider.addToCart(product);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${product.name} added to cart'),
-                        duration: const Duration(seconds: 1),
-                      ),
-                    );
+                    if (user == null) {
+                      _requireLogin(context);
+                    } else {
+                      cartProvider.addToCart(product);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${product.name} added to cart'),
+                          duration: const Duration(seconds: 1),
+                        ),
+                      );
+                    }
                   },
                 ),
               ],

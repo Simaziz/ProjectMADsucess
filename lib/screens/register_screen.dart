@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';  // Import the auth provider
-import 'home_screen.dart';  // Import the Home screen (user page)
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -64,17 +63,20 @@ class _RegisterFormContentState extends State<RegisterFormContent> {
 
             if (success) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Registered successfully!')),
+                const SnackBar(
+                  content: Text('Registered successfully!'),
+                ),
               );
 
-              // Redirect to HomeScreen (user page)
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => HomeScreen()),
-              );
+              // Close the registration screen
+              // LandingController in main.dart will now detect auth
+              // and show UserMainNavScreen with navbar
+              Navigator.pop(context);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Registration failed')),
+                const SnackBar(
+                  content: Text('Registration failed'),
+                ),
               );
             }
           },
